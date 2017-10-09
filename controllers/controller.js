@@ -1,30 +1,41 @@
 var mongo = require('mongoose');
 // var Conta = mongo.model('Conta');
 
+var saldoAtual;
+
 module.exports = {
 	gravar: function(req,res){
 		var request = req.body;
 
 		console.log(request);
 
-		// if(request.length >= 2){
-		// 	for (var i = 0; i < request.length; i++) {
-		// 		var balada = new Balada(request[i]);
-		// 		balada.save(function(err){
-		// 			if (err) {
-		//  				return res.json(500, err);
-		//  		 }
-		// 		});
-		// 	}
-		// }else if(request != undefined){
-		// 	var balada = new Balada(request);
-		// 	balada.save(function(err){
-		// 		if (err) {
-		// 			return res.json(500, err);
-		// 	 }
-		// 	});
-		// }
-		res.send("Dados Salvos com sucesso!");
+		var saldo = parseFloat(request.salary) + parseFloat(request.bank.balance);
+		console.log("Saldo "+saldo);
+		var total = 0.0;
+		for(var i in request.bank.transfer){
+			var transf = request.bank.transfer[i];
+			if(transf.transactionType == "debito"){
+				total = total + parseFloat(transf.value);
+				console.log("Debito "+ transf.value);
+				saldo = saldo - total;
+				console.log("Saldo "+saldo);
+			}
+			if(transf.transactionType == "credito"){
+				total = total + parseFloat(transf.value);
+				console.log("credito "+ transf.value);
+				saldo = saldo + total;
+				console.log("Saldo "+saldo);
+			}
+		}
+		total = 0.0;
+		for(var i in request.account){
+			var contas = request.account[i];
+			total = total + parseFloat(contas.value);
+			saldoAtual = saldo - total;
+		}
+		console.log("atual "+saldoAtual);
+
+		res.send("Dados Salvos com sucesso! "+ saldoAtual);
 
 	},
 	buscarID: function(req, res){

@@ -11,19 +11,20 @@ var UserModel = function() {
 		dayWageBill:String
 		bank:{
 			balance:String,
-			transfer:{
+			transfer:[{
+				source:String,
+				transactionType:String,
+				date:String,
+				value:String}],
+			transaction:[{
 				source:String,
 				date:String,
-				value:String},
-			transaction:{
-				source:String,
-				date:String,
-				value:String}},
-		account:{
+				value:String}]},
+		account:[{
 			source:String,
 			value:String,
 			dtDue:String
-		}
+		}]
 	});
 	mongo.model('User',User);
 };
